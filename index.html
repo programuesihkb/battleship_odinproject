@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Skranji:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <h1 class="nav-title">Norse Battleship</h1>
+            <div class="nav-options">
+                <button class="nav-button">New Game</button>
+                <button class="nav-button">Settings</button>
+            </div>
+        </nav>
+
+        <div class="game-container">
+            <div class="player-board">
+                <h2>Player Board</h2>
+                <div class="board" id="player-board"></div>
+            </div>
+            <div class="computer-board">
+                <h2>Computer Board</h2>
+                <div class="board" id="computer-board"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
