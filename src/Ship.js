@@ -1,5 +1,5 @@
 
-export default function createShip(length){
+export default function Ship(length){
     let hits = 0;
 
     function hit(){
