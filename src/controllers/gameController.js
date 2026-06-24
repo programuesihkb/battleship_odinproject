@@ -1,14 +1,14 @@
-
-import Player from '../Player';
-import GameBoard from '../Gameboard'; 
+import Player from '../Player.js';
+import GameBoard from '../Gameboard.js';
 
 export default function GameController() {
 
   const humanPlayer = Player('human');
   const computerPlayer = Player('computer');
-  
+
   let currentTurn = 'human';
-  let gameActive = false; 
+  let gameActive = false;
+  const computerAttackedCells = new Set();
 
   function getHumanPlayer() {
     return humanPlayer;
@@ -35,39 +35,46 @@ export default function GameController() {
   // Called by displayController when human clicks to attack
   function playerAttack(x, y) {
     if (!gameActive) return false;
-    if (currentTurn !== 'human') return false; 
+    if (currentTurn !== 'human') return false;
 
-    const hit = computerPlayer.gameboard.receiveAttack(x, y);
-    
+    const { hit, ship } = computerPlayer.gameboard.receiveAttack(x, y);
+    const sunk = ship ? ship.isSunk() : false;
+
     if (computerPlayer.gameboard.allSunk()) {
       gameActive = false;
-      return { hit, gameOver: true, winner: 'human' };
+      return { hit, sunk, ship, shipName: ship?.getName(), gameOver: true, winner: 'human' };
     }
 
-    // Switch turn to computer
     currentTurn = 'computer';
-    return { hit, gameOver: false };
-  }
+    return { hit, sunk, ship, shipName: ship?.getName(), gameOver: false };
+}
 
-  // Called by displayController (or automatically after a delay)
   function computerAttack() {
     if (!gameActive) return false;
     if (currentTurn !== 'computer') return false;
 
-    // For now, random move. Later some AI logic here.
-    const x = Math.floor(Math.random() * 10);
-    const y = Math.floor(Math.random() * 10);
+    const available = [];
+    for (let y = 0; y < 10; y++) {
+      for (let x = 0; x < 10; x++) {
+        if (!computerAttackedCells.has(`${x},${y}`)) available.push([x, y]);
+      }
+    }
+    if (available.length === 0) return false;
 
-    const hit = humanPlayer.gameboard.receiveAttack(x, y);
+    const [x, y] = available[Math.floor(Math.random() * available.length)];
+    computerAttackedCells.add(`${x},${y}`);
+
+    const { hit, ship } = humanPlayer.gameboard.receiveAttack(x, y);
+    const sunk = ship ? ship.isSunk() : false;
 
     if (humanPlayer.gameboard.allSunk()) {
       gameActive = false;
-      return { hit, x, y, gameOver: true, winner: 'computer' };
+      return { hit, x, y, sunk, ship, shipName: ship?.getName(), gameOver: true, winner: 'computer' };
     }
 
     currentTurn = 'human';
-    return { hit, x, y, gameOver: false };
-  }
+    return { hit, x, y, sunk, ship, shipName: ship?.getName(), gameOver: false };
+      }
 
   return {
     getHumanPlayer,

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battleship</title>
+    <title>Norse Battleship - Elion Emini</title>
     <link rel="stylesheet" href="style.css">
     <!-- google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,22 +15,28 @@
         <nav class="navbar">
             <h1 class="nav-title">Norse Battleship</h1>
             <div class="nav-options">
-                <button class="nav-button">New Game</button>
+                <button class="nav-button" id="new-game-btn">New Game</button>
                 <button class="nav-button">Settings</button>
             </div>
         </nav>
 
+        <div class="status-bar">
+            <p id="status">Loading…</p>
+        </div>
+
         <div class="game-container">
             <div class="player-board">
-                <h2>Player Board</h2>
+                <h2>Your Fleet</h2>
                 <div class="board" id="player-board"></div>
+                <div class="fleet-tracker" id="player-fleet"></div>
             </div>
             <div class="computer-board">
-                <h2>Computer Board</h2>
+                <h2>Enemy Waters</h2>
                 <div class="board" id="computer-board"></div>
+                <div class="fleet-tracker" id="computer-fleet"></div>
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script type="module" src="index.js"></script>
 </body>
 </html>

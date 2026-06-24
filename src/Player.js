@@ -1,4 +1,4 @@
-import GameBoard from './gameboard'; 
+import GameBoard from './Gameboard.js';
 
 export default function Player(type = 'human') {
   if (type !== 'human' && type !== 'computer') {

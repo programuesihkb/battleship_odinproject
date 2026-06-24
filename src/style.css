@@ -7,7 +7,6 @@
   --color-accent: #BEE9E8;
 }
 
-
 *{  
     margin: 0; 
     padding: 0; 
@@ -25,11 +24,10 @@ body{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 2rem 1rem 3rem 1rem;
+    padding: 1rem;
     background-color: var(--color-secondary);
     color: var(--color-text);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 0 0 50% 50%;
 
     h1{
         font-size: 2rem;
@@ -68,12 +66,240 @@ body{
     }
 }
 
+.status-bar {
+    text-align: center;
+    padding: 0.75rem 1rem;
+    font-size: 1.1rem;
+    color: var(--color-text);
+    background-color: var(--color-secondary);
+    margin: 0.75rem 2rem;
+    border-radius: 8px;
+    letter-spacing: 0.04em;
+}
+
 .game-container{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
     padding: 2rem;
-    min-height: 100vh;
     background-color: var(--color-primary);
-    color: var(--color-text-secondary);
+    color: var(--color-text);
+}
+
+.player-board h2,
+.computer-board h2 {
+    text-align: center;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+}
+
+/* 10x10 board grid */
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 3px;
+    background: var(--color-secondary);
+    padding: 6px;
+    border-radius: 8px;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.cell {
+    background: rgba(95, 168, 211, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    cursor: default;
+    position: relative;
+    transition: background 0.15s;
+}
+
+
+/* Enemy board — crosshair on hover */
+#computer-board .cell {
+    cursor: crosshair;
+}
+
+#computer-board .cell:hover:not(.hit):not(.miss) {
+    background: rgba(190, 233, 232, 0.35);
+}
+
+/* Hit marker — red with X */
+.cell.hit {
+    background: #e63946;
+    border-color: #c1121f;
+}
+
+.cell.hit::after {
+    content: '';
+    position: absolute;
+    inset: 18%;
+    background: rgba(255, 255, 255, 0.85);
+    clip-path: polygon(
+        20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%,
+        50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%
+    );
+}
+
+/* Miss marker — light dot */
+.cell.miss {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.cell.miss::after {
+    content: '';
+    position: absolute;
+    inset: 28%;
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 50%;
+}
+
+/* Disable enemy board during computer turn */
+#computer-board.disabled {
+    pointer-events: none;
+    opacity: 0.60;
+}
+
+/* Win / lose overlay */
+.win-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(27, 73, 101, 0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.win-card {
+    background: var(--color-secondary);
+    border: 2px solid var(--color-accent);
+    border-radius: 14px;
+    padding: 3rem 4rem;
+    text-align: center;
+    color: var(--color-text);
+
+    h2 {
+        font-size: 3rem;
+        color: var(--color-accent);
+        margin-bottom: 0.75rem;
+    }
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.85;
+    }
+}
+
+/* board becomes the positioning context for the overlay */
+.board { position: relative; }
+
+/* overlay grid, aligned exactly with the cell grid */
+.ship-layer {
+  position: absolute;
+  inset: 6px;                          /* match .board padding */
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: 3px;                            /* match .board gap */
+  pointer-events: none;               /* clicks fall through to cells */
+  z-index: 1;
+}
+
+/* one image stretched across the whole ship */
+.ship-sprite {
+  background-image: url('./images/viking-ship.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* vertical ships: rotate the SAME image — no second asset needed */
+.ship-sprite.vertical {
+  background: none;
+  container-type: size;
+  position: relative;
+}
+.ship-sprite.vertical::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100cqh;    /* take the box's height as the pre-rotation width */
+  height: 100cqw;   /* and its width as the pre-rotation height */
+  background-image: url('./images/viking-ship.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* keep hit/miss markers visible on top of the ships (player board) */
+.cell.hit,
+.cell.miss { z-index: 2; }
+
+/* computer board: sunk ship sprites paint above hit/miss cells */
+#computer-board .ship-layer { z-index: 3; }
+
+/* computer board: dim the X so the ship image reads clearly on top */
+#computer-board .cell.hit::after { opacity: 0.2; }
+
+/* Sunk enemy ship revealed on computer board */
+.ship-sprite.sunk-reveal {
+  opacity: 0.85;
+  filter: sepia(0.2) brightness(0.85);
+}
+
+/* Fleet tracker */
+.fleet-tracker {
+  padding: 0.55rem 0.75rem;
+  background: var(--color-secondary);
+  border-radius: 8px;
+  max-width: 440px;
+  margin: 0.75rem auto 0;
+}
+
+.fleet-ship {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.28rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fleet-ship:last-child {
+  border-bottom: none;
+}
+
+.ship-label {
+  flex: 0 0 88px;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+  color: var(--color-text);
+}
+
+.ship-cells {
+  display: flex;
+  gap: 3px;
+}
+
+.ship-cell {
+  width: 16px;
+  height: 16px;
+  background: var(--color-accent);
+  border-radius: 2px;
+}
+
+.fleet-ship.sunk .ship-label {
+  text-decoration: line-through;
+  color: rgba(242, 250, 255, 0.35);
+}
+
+.fleet-ship.sunk .ship-cell {
+  background: #e63946;
+  opacity: 0.65;
 }

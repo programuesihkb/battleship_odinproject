@@ -1,4 +1,3 @@
-import {Ship} from './Ship';
-import {Gameboard} from './Gameboard';
+import { init } from './controllers/displayController.js';
 
-
+init();

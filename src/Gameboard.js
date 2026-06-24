@@ -1,4 +1,4 @@
-import Ship from './ship'; 
+import Ship from './Ship.js';
 
 export default function GameBoard() {
   const SIZE = 10;
@@ -14,10 +14,9 @@ export default function GameBoard() {
   }
 
 
-  function placeShip(length, x, y, orientation = 'horizontal') {
+  function placeShip(length, x, y, orientation = 'horizontal', name = '') {
     const cells = [];
 
-    
     for (let i = 0; i < length; i++) {
       const cx = orientation === 'horizontal' ? x + i : x;
       const cy = orientation === 'vertical' ? y + i : y;
@@ -31,7 +30,7 @@ export default function GameBoard() {
       cells.push([cx, cy]);
     }
 
-    const ship = Ship(length);
+    const ship = Ship(length, name);
     cells.forEach(([cx, cy]) => {
       board[cy][cx] = ship;
     });
@@ -48,15 +47,19 @@ export default function GameBoard() {
     const target = board[y][x];
     if (target === null) {
       missedAttacks.push([x, y]);
-      return false; // missed
+      return { hit: false, ship: null };
     }
 
     target.hit();
-    return true; // hit
+    return { hit: true, ship: target };
   }
 
   function getMissedAttacks() {
     return missedAttacks;
+  }
+
+  function getSunkShips() {
+    return ships.filter((ship) => ship.isSunk());
   }
 
   function allSunk() {
@@ -70,5 +73,6 @@ export default function GameBoard() {
     receiveAttack,
     getMissedAttacks,
     allSunk,
+    getSunkShips,
   };
 }

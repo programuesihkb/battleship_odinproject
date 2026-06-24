@@ -2,11 +2,11 @@
   "name": "battleship",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
+    "start": "npx serve src",
     "test": "jest",
     "test:watch": "jest --watch"
   },
