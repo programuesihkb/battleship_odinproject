@@ -39,9 +39,6 @@ body{
 
 
     .nav-options{
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
         align-items: center;
         padding: 0 3rem;
 
@@ -214,7 +211,7 @@ body{
 
 /* one image stretched across the whole ship */
 .ship-sprite {
-  background-image: url('./images/viking-ship.png');
+  background-image: url('./src/images/viking-ship.png');
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
@@ -232,7 +229,7 @@ body{
   left: 50%;
   width: 100cqh;    /* take the box's height as the pre-rotation width */
   height: 100cqw;   /* and its width as the pre-rotation height */
-  background-image: url('./images/viking-ship.png');
+  background-image: url('./src/images/viking-ship.png');
   background-size: 100% 100%;
   background-repeat: no-repeat;
   transform: translate(-50%, -50%) rotate(90deg);

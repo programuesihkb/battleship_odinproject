@@ -52,7 +52,7 @@ export default function GameBoard() {
 
     target.hit();
     return { hit: true, ship: target };
-  }
+}
 
   function getMissedAttacks() {
     return missedAttacks;
